@@ -1,6 +1,8 @@
-import React from "react";
+import React, { Suspense } from "react";
 import Account from "./account";
 import Link from "next/link";
+import { Button } from "../ui/button";
+import { LoadingSpinner } from "../ui/loading-spinner";
 
 const Header = () => {
   return (
@@ -12,7 +14,15 @@ const Header = () => {
         >
           <span className="text-primary">Swift</span>Wallet
         </Link>
-        <Account />
+        <Suspense
+          fallback={
+            <Button variant={"secondary"}>
+              <LoadingSpinner />
+            </Button>
+          }
+        >
+          <Account />
+        </Suspense>
       </div>
     </header>
   );

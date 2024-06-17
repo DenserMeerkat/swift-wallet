@@ -9,19 +9,13 @@ import {
 import { useAppContext } from "../context/app-context";
 import Link from "next/link";
 import { Button, buttonVariants } from "../ui/button";
-import { LoadingSpinner } from "../ui/loading-spinner";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const Account = () => {
   const { user, updateUser } = useAppContext();
-  const [isDomLoaded, setIsDomLoaded] = React.useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const auth = searchParams.get("auth");
-
-  useEffect(() => {
-    setIsDomLoaded(true);
-  }, []);
 
   function getAuthLink() {
     if (auth === "signin") {
@@ -35,13 +29,6 @@ const Account = () => {
     }
     return "/?auth=signin";
   }
-
-  if (!isDomLoaded)
-    return (
-      <Button variant={"secondary"}>
-        <LoadingSpinner />
-      </Button>
-    );
 
   if (user)
     return (

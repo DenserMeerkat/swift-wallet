@@ -15,7 +15,7 @@ export default function Home() {
     const params = new URLSearchParams();
     params.append("auth", "signin");
     router.push("/" + "?" + params.toString());
-  }, [user]);
+  }, [user, router]);
 
   return <main className="min-h-[90svh]"></main>;
 }
