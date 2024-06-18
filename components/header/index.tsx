@@ -1,8 +1,8 @@
 import React, { Suspense } from "react";
 import Account from "./account";
 import Link from "next/link";
-import { Button } from "../ui/button";
-import { LoadingSpinner } from "../ui/loading-spinner";
+import { Button } from "@/components/ui/button";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 const Header = () => {
   return (
