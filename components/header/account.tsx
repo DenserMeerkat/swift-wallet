@@ -9,11 +9,10 @@ import {
 import { useAppContext } from "../context/app-context";
 import Link from "next/link";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 const Account = () => {
-  const { user, updateUser } = useAppContext();
-  const router = useRouter();
+  const { user, logout } = useAppContext();
   const searchParams = useSearchParams();
   const auth = searchParams.get("auth");
 
@@ -40,7 +39,7 @@ const Account = () => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem>Profile</DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onSelect={logout}>
             <span className="text-destructive">Logout</span>
           </DropdownMenuItem>
         </DropdownMenuContent>

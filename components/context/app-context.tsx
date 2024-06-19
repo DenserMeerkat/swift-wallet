@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { User, Transaction, Wallet } from "@/lib/types";
 
 interface AppContextType {
@@ -26,28 +32,48 @@ interface AppContextProviderProps {
   children: ReactNode;
 }
 
+const ISSERVER = typeof window === "undefined";
+
+const getStoredState = () => {
+  let storedState;
+  if (!ISSERVER) {
+    storedState = localStorage.getItem("swiftWallet");
+  }
+  return storedState;
+};
+
+const getInitUser = () => {
+  const storedState = getStoredState();
+  return storedState ? JSON.parse(storedState).user : null;
+};
+
+const getInitWallets = () => {
+  const storedState = getStoredState();
+  return storedState ? JSON.parse(storedState).wallets : [];
+};
+
+const getInitTranscations = () => {
+  const storedState = getStoredState();
+  return storedState ? JSON.parse(storedState).transactions : [];
+};
+
 export const AppContextProvider: React.FC<AppContextProviderProps> = ({
   children,
 }) => {
-  const [user, setUser] = useState<User | null>(
-    null,
-    //   {
-    //   id: "1",
-    //   name: "John Doe",
-    //   email: "example@gmail.com",
-    //   walletsIds: ["1", "2"],
-    // }
+  const [user, setUser] = useState<User | null>(getInitUser());
+  const [wallets, setWallets] = useState<Wallet[]>(getInitWallets());
+  const [transactions, setTransactions] = useState<Transaction[]>(
+    getInitTranscations(),
   );
-  const [wallets, setWallets] = useState<Wallet[]>([]);
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   const logout = () => {
     setUser(null);
     setWallets([]);
     setTransactions([]);
+    localStorage.removeItem("swiftWallet");
   };
 
-  const state = {
+  const state: AppContextType = {
     user,
     wallets,
     transactions,
@@ -56,6 +82,16 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
     updateTransactions: setTransactions,
     logout,
   };
+
+  useEffect(() => {
+    const stateToStore = JSON.stringify({
+      user,
+      wallets,
+      transactions,
+    });
+    localStorage.setItem("swiftWallet", stateToStore);
+    console.log("saving = " + stateToStore);
+  }, [user, wallets, transactions]);
 
   return <AppContext.Provider value={state}>{children}</AppContext.Provider>;
 };
