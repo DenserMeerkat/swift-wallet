@@ -18,7 +18,6 @@ export interface Wallet {
   name: string;
   balance: number;
   userId: string;
-  walletName: string;
   transactionsIds: string[];
 }
 

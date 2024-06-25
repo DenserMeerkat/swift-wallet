@@ -90,7 +90,6 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
       transactions,
     });
     localStorage.setItem("swiftWallet", stateToStore);
-    console.log("saving = " + stateToStore);
   }, [user, wallets, transactions]);
 
   return <AppContext.Provider value={state}>{children}</AppContext.Provider>;
