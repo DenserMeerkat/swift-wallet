@@ -20,14 +20,22 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { signInSchema } from "@/lib/schema";
+import { useAppContext } from "../context/app-context";
 
 export function SignInForm() {
+  const { updateUser } = useAppContext();
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
   });
 
   function onSubmit(data: z.infer<typeof signInSchema>) {
     console.log(data);
+    updateUser({
+      id: "1",
+      name: "John Doe",
+      email: data.email,
+      walletIds: [],
+    });
   }
 
   return (

@@ -22,6 +22,8 @@ const config = {
         "8xl": "90rem",
       },
       screens: {
+        xs: { raw: "(min-width: 25rem)" },
+        lm: { raw: "(min-width: 30rem)" },
         "8xl": { raw: "(min-width: 90rem)" },
       },
       colors: {

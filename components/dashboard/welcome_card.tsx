@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { useAppContext } from "../context/app-context";
 
@@ -20,11 +21,13 @@ const WelcomeCard = () => {
   };
   const firstName = user?.name.split(" ")[0] ?? "Anonymous";
   return (
-    <span className="text-center text-[clamp(12px,7vw,36px)] font-bold">
-      <span>{getGreeting()}</span>
-      <span> ! </span>
-      <span className="text-primary"> {firstName}</span>,
-    </span>
+    <div className="mx-auto w-fit">
+      <span className="text-center text-[clamp(12px,7vw,36px)] font-bold">
+        <span>{getGreeting()}</span>
+        <span> ! </span>
+        <span className="text-primary"> {firstName}</span>,
+      </span>
+    </div>
   );
 };
 

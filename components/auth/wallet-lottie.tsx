@@ -10,7 +10,7 @@ const WalletLottie = () => {
 
   const { View } = useLottie(walletOptions);
 
-  return <div className="max-w-sm">{View}</div>;
+  return <div className="w-96 max-w-sm">{View}</div>;
 };
 
 export default WalletLottie;

@@ -4,6 +4,7 @@ import { useAppContext } from "@/components/context/app-context";
 import { useEffect } from "react";
 import WelcomeCard from "@/components/dashboard/welcome_card";
 import { WalletCarousel } from "@/components/dashboard/wallet_carousel";
+import TransactionTable from "@/components/dashboard/transaction_table";
 
 export default function Dashboard() {
   const { user, updateUser } = useAppContext();
@@ -17,9 +18,10 @@ export default function Dashboard() {
   }, [user, router]);
 
   return (
-    <main className="flex min-h-[90svh] flex-col items-center gap-16 p-4 lg:p-8">
+    <main className="min-h-[90svh] items-center space-y-16 p-4 lg:p-8">
       <WelcomeCard />
       <WalletCarousel />
+      <TransactionTable />
     </main>
   );
 }
