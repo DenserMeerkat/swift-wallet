@@ -67,8 +67,8 @@ export default function AddTransaction() {
 const AddTransactionForm = (props: any) => {
   const { wallets } = useAppContext();
   const [transaction, setTransaction] = useState("income");
-  const [amount, setAmount] = useState(0);
   const [wallet, setWallet] = useState(0);
+
   const addTransactionSchema = z.object({
     amount: z.number(),
   });

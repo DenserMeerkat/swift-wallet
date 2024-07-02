@@ -15,6 +15,7 @@ import {
 import WalletCard from "./wallet_card";
 import { AddWalletButton, AddWalletCard } from "./add_wallet";
 import { useAppContext } from "../context/app-context";
+import ViewWallet from "./view_wallet";
 
 export function WalletCarousel() {
   const { wallets } = useAppContext();
@@ -42,7 +43,7 @@ export function WalletCarousel() {
               key={index}
               className="sm:basis-1/2 lg:basis-1/3 xl:basis-1/4"
             >
-              <WalletCard {...wallet} />
+              <ViewWalletCard wallet={wallet} />
             </CarouselItem>
           ))}
           <CarouselItem
@@ -58,3 +59,19 @@ export function WalletCarousel() {
     </Card>
   );
 }
+
+const ViewWalletCard = (props: any) => {
+  const [open, setOpen] = React.useState(false);
+  return (
+    <ViewWallet
+      Trigger={
+        <div className="cursor-pointer" onClick={() => setOpen(!open)}>
+          <WalletCard {...props.wallet} />
+        </div>
+      }
+      wallet={props.wallet}
+      open={open}
+      onOpenChange={setOpen}
+    />
+  );
+};

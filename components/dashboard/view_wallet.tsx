@@ -1,11 +1,13 @@
-import { Badge } from "@/components/ui/badge";
+import React from "react";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -14,55 +16,42 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { cn } from "@/lib/utils";
-import AddTransaction from "./add_transaction";
-import { TransactionType, Wallet } from "@/lib/types";
-import { useAppContext } from "../context/app-context";
+import { Badge } from "../ui/badge";
 import { format } from "timeago.js";
+import { Transaction, TransactionType } from "@/lib/types";
+import { cn } from "@/lib/utils";
+import { useAppContext } from "../context/app-context";
 
-export default function TransactionTable() {
-  const { wallets, transactions } = useAppContext();
-
-  function getWalletName(id: string): string {
-    return wallets.find((wallet: Wallet) => wallet.id == id)?.name ?? "unknown";
-  }
-
+const ViewWallet = (props: any) => {
+  const { transactions } = useAppContext();
+  const filteredTransactions: Transaction[] = transactions.filter(
+    (transaction: Transaction) => transaction.fromWalletId == props.wallet.id,
+  );
   return (
-    <Card className="mx-auto max-w-6xl border-none shadow-none">
-      <div className="flex flex-col justify-between xs:flex-row">
-        <CardHeader className="px-6 py-2 sm:p-6">
-          <CardTitle>Transactions</CardTitle>
-          <CardDescription>
-            Recent transactions across your wallets.
-          </CardDescription>
-        </CardHeader>
-        <CardHeader className="px-6 py-2 sm:p-6">
-          <AddTransaction />
-        </CardHeader>
-      </div>
-      <CardContent>
+    <Dialog open={props.open} onOpenChange={props.onOpenChange}>
+      <DialogTrigger asChild>{props.Trigger}</DialogTrigger>
+      <DialogContent className="max-w-lm">
+        <DialogHeader>
+          <DialogTitle>{props.wallet.name}</DialogTitle>
+          <DialogDescription>₹{props.wallet.balance}</DialogDescription>
+        </DialogHeader>
         <div className="rounded-md border-2 bg-gradient-to-b from-muted/40 to-muted/20 p-1">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Wallet</TableHead>
-                <TableHead className="hidden sm:table-cell">Type</TableHead>
-                <TableHead className="hidden xs:table-cell">Date</TableHead>
+                <TableHead className="table-cell">Type</TableHead>
+                <TableHead className="table-cell">Date</TableHead>
                 <TableHead className="text-right">Amount</TableHead>
               </TableRow>
             </TableHeader>
-            {transactions.length == 0 ? (
+
+            {filteredTransactions.length == 0 ? (
               <div className="mx-auto p-2">No transactions found</div>
             ) : (
               <TableBody>
-                {transactions.map((transaction) => (
+                {filteredTransactions.map((transaction: Transaction) => (
                   <TableRow key={transaction.id}>
-                    <TableCell>
-                      <div className="font-medium">
-                        {getWalletName(transaction.fromWalletId)}
-                      </div>
-                    </TableCell>
-                    <TableCell className="hidden sm:table-cell">
+                    <TableCell className="table-cell">
                       <Badge
                         className="text-xs"
                         variant={
@@ -74,7 +63,7 @@ export default function TransactionTable() {
                         {transaction.type}
                       </Badge>
                     </TableCell>
-                    <TableCell className="hidden xs:table-cell">
+                    <TableCell className="table-cell">
                       {format(transaction.createdAt)}
                     </TableCell>
                     <TableCell
@@ -93,7 +82,9 @@ export default function TransactionTable() {
             )}
           </Table>
         </div>
-      </CardContent>
-    </Card>
+      </DialogContent>
+    </Dialog>
   );
-}
+};
+
+export default ViewWallet;
