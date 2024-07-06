@@ -18,7 +18,16 @@ import { useAppContext } from "../context/app-context";
 import ViewWallet from "./view_wallet";
 
 export function WalletCarousel() {
+  const [isDomLoaded, setIsDomLoaded] = React.useState(false);
   const { wallets } = useAppContext();
+
+  React.useEffect(() => {
+    setIsDomLoaded(true);
+  }, []);
+
+  if (!isDomLoaded) {
+    return <></>;
+  }
 
   return (
     <Card className="mx-auto max-w-6xl border-none shadow-none">
@@ -35,7 +44,7 @@ export function WalletCarousel() {
         opts={{
           align: "start",
         }}
-        className="mx-auto w-[clamp(200px,70vw,2000px)] max-w-7xl select-none"
+        className="mx-auto w-[clamp(200px,70vw,2000px)] max-w-6xl select-none"
       >
         <CarouselContent>
           {wallets.map((wallet, index) => (

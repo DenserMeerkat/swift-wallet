@@ -5,7 +5,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-import { User, Transaction, Wallet, TransactionType } from "@/lib/types";
+import { User, Transaction, Wallet } from "@/lib/types";
 
 interface AppContextType {
   user: User | null;
@@ -37,7 +37,7 @@ const ISSERVER = typeof window === "undefined";
 const getStoredState = () => {
   let storedState;
   if (!ISSERVER) {
-    storedState = localStorage.getItem("swiftWallet");
+    storedState = sessionStorage.getItem("swiftWallet");
   }
   return storedState;
 };
@@ -49,81 +49,12 @@ const getInitUser = () => {
 
 const getInitWallets = () => {
   const storedState = getStoredState();
-  return storedState
-    ? JSON.parse(storedState).wallets
-    : [
-        {
-          id: "1",
-          name: "Cash",
-          balance: 1000,
-          userId: "1",
-          transactionsIds: [],
-        },
-        {
-          id: "2",
-          name: "Bank",
-          balance: 2000,
-          userId: "1",
-          transactionsIds: [],
-        },
-        {
-          id: "3",
-          name: "Credit Card",
-          balance: 3000,
-          userId: "1",
-          transactionsIds: [],
-        },
-        {
-          id: "4",
-          name: "Savings",
-          balance: 4000,
-          userId: "1",
-          transactionsIds: [],
-        },
-        {
-          id: "5",
-          name: "Investment",
-          balance: 5000,
-          userId: "1",
-          transactionsIds: [],
-        },
-      ];
+  return storedState ? JSON.parse(storedState).wallets : [];
 };
 
 const getInitTranscations = () => {
   const storedState = getStoredState();
-  return storedState
-    ? JSON.parse(storedState).transactions
-    : [
-        {
-          id: "1",
-          fromWalletId: "1",
-          type: TransactionType.Income,
-          createdAt: Date.now() - 11 * 1000 * 60 * 60,
-          amount: 250.0,
-        },
-        {
-          id: "2",
-          fromWalletId: "2",
-          type: TransactionType.Expense,
-          createdAt: Date.now() - 36 * 1000 * 60 * 60,
-          amount: 150.0,
-        },
-        {
-          id: "3",
-          fromWalletId: "3",
-          type: TransactionType.Income,
-          createdAt: Date.now() - 40 * 1000 * 60 * 60,
-          amount: 250.0,
-        },
-        {
-          id: "4",
-          fromWalletId: "4",
-          type: TransactionType.Expense,
-          createdAt: Date.now() - 72 * 1000 * 60 * 60,
-          amount: 150.0,
-        },
-      ];
+  return storedState ? JSON.parse(storedState).transactions : [];
 };
 
 export const AppContextProvider: React.FC<AppContextProviderProps> = ({
@@ -139,7 +70,7 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
     setUser(null);
     setWallets([]);
     setTransactions([]);
-    localStorage.removeItem("swiftWallet");
+    sessionStorage.removeItem("swiftWallet");
   };
 
   const state: AppContextType = {
@@ -158,7 +89,7 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
       wallets,
       transactions,
     });
-    localStorage.setItem("swiftWallet", stateToStore);
+    sessionStorage.setItem("swiftWallet", stateToStore);
   }, [user, wallets, transactions]);
 
   return <AppContext.Provider value={state}>{children}</AppContext.Provider>;

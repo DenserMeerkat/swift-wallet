@@ -17,6 +17,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { CirclePlus, PlusCircle } from "lucide-react";
 import { useAppContext } from "../context/app-context";
 import { Button } from "../ui/button";
+import { toast } from "sonner";
+import { createWallet } from "@/lib/requests";
 
 export const AddWalletCard = () => {
   const [open, setOpen] = React.useState(false);
@@ -77,7 +79,8 @@ export const AddWalletButton = () => {
 };
 
 export const AddWalletForm = (props: any) => {
-  const { user, wallets } = useAppContext();
+  const { user, wallets, updateWallets } = useAppContext();
+
   const addWalletSchema = z.object({
     name: z
       .string()
@@ -96,8 +99,27 @@ export const AddWalletForm = (props: any) => {
     resolver: zodResolver(addWalletSchema),
   });
 
-  function onSubmit(data: z.infer<typeof addWalletSchema>) {
-    console.log(data);
+  async function onSubmit(data: z.infer<typeof addWalletSchema>) {
+    const wallet = {
+      name: data.name,
+      balance: data.initialBalance ?? 0,
+    };
+    const isSuccess = await createWallet(
+      user!.id,
+      wallet,
+      wallets,
+      updateWallets,
+    );
+    if (isSuccess) {
+      toast.success("Success", {
+        description: "Wallet Created Successfully!",
+      });
+      closeDialog();
+    } else {
+      toast.error("Error", {
+        description: "Wallet Creation failed",
+      });
+    }
   }
 
   const closeDialog = () => {

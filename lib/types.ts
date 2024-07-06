@@ -1,15 +1,13 @@
 export enum TransactionType {
   Income = "income",
   Expense = "expense",
-  Transfer = "transfer",
 }
 
 export interface Transaction {
   id: string;
   amount: number;
   type: TransactionType;
-  fromWalletId: string;
-  toWalletId?: string;
+  walletId: string;
   createdAt: Date;
 }
 
@@ -17,7 +15,6 @@ export interface Wallet {
   id: string;
   name: string;
   balance: number;
-  userId: string;
   transactionsIds: string[];
 }
 

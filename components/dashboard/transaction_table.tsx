@@ -1,3 +1,4 @@
+import React from "react";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -21,10 +22,19 @@ import { useAppContext } from "../context/app-context";
 import { format } from "timeago.js";
 
 export default function TransactionTable() {
+  const [isDomLoaded, setIsDomLoaded] = React.useState(false);
   const { wallets, transactions } = useAppContext();
 
   function getWalletName(id: string): string {
     return wallets.find((wallet: Wallet) => wallet.id == id)?.name ?? "unknown";
+  }
+
+  React.useEffect(() => {
+    setIsDomLoaded(true);
+  }, []);
+
+  if (!isDomLoaded) {
+    return <></>;
   }
 
   return (
@@ -59,7 +69,7 @@ export default function TransactionTable() {
                   <TableRow key={transaction.id}>
                     <TableCell>
                       <div className="font-medium">
-                        {getWalletName(transaction.fromWalletId)}
+                        {getWalletName(transaction.walletId)}
                       </div>
                     </TableCell>
                     <TableCell className="hidden sm:table-cell">

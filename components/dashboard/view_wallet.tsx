@@ -6,7 +6,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import {
   Table,
@@ -25,7 +24,7 @@ import { useAppContext } from "../context/app-context";
 const ViewWallet = (props: any) => {
   const { transactions } = useAppContext();
   const filteredTransactions: Transaction[] = transactions.filter(
-    (transaction: Transaction) => transaction.fromWalletId == props.wallet.id,
+    (transaction: Transaction) => transaction.walletId == props.wallet.id,
   );
   return (
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>

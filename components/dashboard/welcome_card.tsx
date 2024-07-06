@@ -4,6 +4,15 @@ import { useAppContext } from "../context/app-context";
 
 const WelcomeCard = () => {
   const { user } = useAppContext();
+  const [isDomLoaded, setIsDomLoaded] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsDomLoaded(true);
+  }, []);
+
+  if (!isDomLoaded) {
+    return <></>;
+  }
 
   const getGreeting = () => {
     const date = new Date();

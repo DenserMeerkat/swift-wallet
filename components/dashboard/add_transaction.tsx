@@ -20,7 +20,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import {
@@ -33,17 +33,21 @@ import {
 } from "@/components/ui/carousel";
 import { PlusCircle } from "lucide-react";
 import { useAppContext } from "../context/app-context";
-import { TransactionType, Wallet } from "@/lib/types";
+import { Wallet } from "@/lib/types";
 import WalletCard from "./wallet_card";
 import React from "react";
+import { toast } from "sonner";
+import { createTransaction } from "@/lib/requests";
 
 export default function AddTransaction() {
   const [open, setOpen] = useState(false);
+  const { wallets } = useAppContext();
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
+          disabled={wallets.length === 0}
           variant={"outline"}
           className="border-dashed bg-muted/40 text-foreground/70 hover:border-primary hover:text-primary"
         >
@@ -65,21 +69,46 @@ export default function AddTransaction() {
 }
 
 const AddTransactionForm = (props: any) => {
-  const { wallets } = useAppContext();
+  const { wallets, transactions, updateTransactions } = useAppContext();
   const [transaction, setTransaction] = useState("income");
   const [wallet, setWallet] = useState(0);
 
   const addTransactionSchema = z.object({
     amount: z.number(),
   });
+
   const form = useForm<z.infer<typeof addTransactionSchema>>({
     resolver: zodResolver(addTransactionSchema),
   });
-  const onSubmit = (data: z.infer<typeof addTransactionSchema>) => {
-    console.log(data);
-    console.log(transaction);
-    console.log(wallet);
-  };
+
+  async function onSubmit(data: z.infer<typeof addTransactionSchema>) {
+    const trans = {
+      amount: data.amount,
+      type: transaction,
+      walletId: wallets[wallet].id,
+    };
+    const isSuccess = await createTransaction(
+      wallets[wallet].id,
+      trans,
+      transactions,
+      updateTransactions,
+    );
+    if (isSuccess) {
+      toast.success("Success", {
+        description: "Transaction Successful!",
+      });
+      if (transaction === "income") {
+        wallets[wallet].balance += data.amount;
+      } else {
+        wallets[wallet].balance -= data.amount;
+      }
+      closeDialog();
+    } else {
+      toast.error("Error", {
+        description: "Transaction failed",
+      });
+    }
+  }
 
   const closeDialog = () => {
     form.reset();

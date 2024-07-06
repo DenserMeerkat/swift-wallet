@@ -28,14 +28,36 @@ import { signUpSchema } from "@/lib/schema";
 import { useState } from "react";
 import { Info } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { signUp } from "@/lib/requests";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export function SignUpForm() {
+  const router = useRouter();
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
   });
 
-  function onSubmit(data: z.infer<typeof signUpSchema>) {
-    console.log(data);
+  async function onSubmit(data: z.infer<typeof signUpSchema>) {
+    const user = {
+      id: "1",
+      name: `${data.firstName} ${data.lastName}`,
+      email: data.email,
+      password: data.password,
+    };
+
+    const isSuccess: boolean = await signUp(user);
+
+    if (isSuccess) {
+      toast.success("Success", {
+        description: "Account created successfully",
+      });
+      router.push("/?auth=signin");
+    } else {
+      toast.error("Error", {
+        description: "Account creation failed",
+      });
+    }
   }
 
   return (

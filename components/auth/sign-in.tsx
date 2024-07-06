@@ -21,21 +21,32 @@ import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { signInSchema } from "@/lib/schema";
 import { useAppContext } from "../context/app-context";
+import { toast } from "sonner";
+import { signIn } from "@/lib/requests";
 
 export function SignInForm() {
-  const { updateUser } = useAppContext();
+  const { updateUser, updateWallets, updateTransactions } = useAppContext();
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
   });
 
-  function onSubmit(data: z.infer<typeof signInSchema>) {
-    console.log(data);
-    updateUser({
-      id: "1",
-      name: "John Doe",
-      email: data.email,
-      walletIds: [],
-    });
+  async function onSubmit(data: z.infer<typeof signInSchema>) {
+    const isSuccess = await signIn(
+      data.email,
+      data.password,
+      updateUser,
+      updateWallets,
+      updateTransactions,
+    );
+    if (isSuccess) {
+      toast.success("Success", {
+        description: "Welcome back!",
+      });
+    } else {
+      toast.error("Error", {
+        description: "Sign In failed",
+      });
+    }
   }
 
   return (
